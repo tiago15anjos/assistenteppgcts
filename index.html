@@ -51,14 +51,27 @@
     </div>
 
     <script>
-        function getAnswer() {
-            var input = document.getElementById("userInput").value;
-            var responseArea = document.getElementById("botResponse");
+function getAnswer() {
+    var input = document.getElementById("userInput").value;
+    var responseArea = document.getElementById("botResponse");
 
-            // Aqui você integraria a chamada para o seu chatbot
-            // Por ora, vamos apenas ecoar a pergunta como uma resposta simples
-            responseArea.value = "Você perguntou: " + input + "\nAinda não posso responder, mas em breve poderei!";
+    fetch('https://us-central1-ia-ppgcts.cloudfunctions.net/hello_world', {
+        method: 'POST',
+        body: JSON.stringify({query: input}),
+        headers: {
+            'Content-Type': 'application/json'
         }
+    })
+    .then(response => response.json())
+    .then(data => {
+        responseArea.value = data.answer;  // Certifique-se de que a função no servidor retorna um JSON com uma chave 'answer'
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        responseArea.value = "Desculpe, ocorreu um erro ao processar sua pergunta.";
+    });
+}
+
     </script>
 </body>
 </html>
